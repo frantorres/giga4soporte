@@ -8,7 +8,7 @@ Author URI: http://frantorres.es/
 Description: Coloca links para acceder fácilmente al sistema de soporte de GIGA4
 Requires at least: 3.1
 Tested up to: 3.5
-Version: 1.00
+Version: 1.01
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: soporte, giga4
