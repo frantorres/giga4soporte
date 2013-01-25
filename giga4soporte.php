@@ -8,7 +8,7 @@ Author URI: http://frantorres.es/
 Description: Coloca links para acceder fácilmente al sistema de soporte de GIGA4
 Requires at least: 3.1
 Tested up to: 3.5.1
-Version: 1.07
+Version: 1.08
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: soporte, giga4
@@ -21,7 +21,7 @@ function github_plugin_updater_test_init() {
 
 	include_once 'updater.php';
 
-	define( 'WP_GITHUB_FORCE_UPDATE', true );
+	define( 'WP_GITHUB_FORCE_UPDATE', false );
 
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
 
@@ -44,6 +44,25 @@ function github_plugin_updater_test_init() {
 	}
 
 }
+
+
+/* 
+ * Disable plugin updates vía WP System
+ *
+ * @param array  $r   Response header
+ * @param string $url The update URL
+ */
+function giga4soporte_hidden_plugin( $r, $url ) {
+	if ( 0 !== strpos( $url, 'http://api.wordpress.org/plugins/update-check' ) )
+		return $r; // Not a plugin update request. Bail immediately.
+	$plugins = unserialize( $r['body']['plugins'] );
+	unset( $plugins->plugins[ plugin_basename( __FILE__ ) ] );
+	unset( $plugins->active[ array_search( plugin_basename( __FILE__ ), $plugins->active ) ] );
+	$r['body']['plugins'] = serialize( $plugins );
+	return $r;
+}
+add_filter( 'http_request_args', 'giga4soporte_hidden_plugin', 5, 2 );
+ 
 
 /* User Unique ID for access Soporte page */
 function g4soporte_add_custom_user_profile_fields( $user ) {
